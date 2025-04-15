@@ -1,0 +1,18 @@
+{
+  "solution": {
+    "@nullvoxpopuli/ember-router-scroll": {
+      "impact": "patch",
+      "oldVersion": "0.0.0",
+      "newVersion": "0.0.1",
+      "tagName": "latest",
+      "constraints": [
+        {
+          "impact": "patch",
+          "reason": "Appears in changelog section :house: Internal"
+        }
+      ],
+      "pkgJSONPath": "./package.json"
+    }
+  },
+  "description": "## Release (2025-04-15)\n\n* @nullvoxpopuli/ember-router-scroll 0.0.1 (patch)\n\n#### :house: Internal\n* `@nullvoxpopuli/ember-router-scroll`\n  * [#2](https://github.com/NullVoxPopuli/ember-router-scroll/pull/2) npx create-release-plan-setup@latest --update ([@NullVoxPopuli](https://github.com/NullVoxPopuli))\n\n#### Committers: 1\n- [@NullVoxPopuli](https://github.com/NullVoxPopuli)\n"
+}
