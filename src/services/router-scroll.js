@@ -183,9 +183,11 @@ class RouterScroll extends Service {
 
     if (!scrollWhenIdle && !scrollWhenAfterRender) {
       // out of the option, this happens on the tightest schedule
+      // eslint-disable-next-line ember/no-runloop
       scheduleOnce('render', this, CALLBACK, transition);
     } else if (scrollWhenAfterRender && !scrollWhenIdle) {
       // out of the option, this happens on the second tightest schedule
+      // eslint-disable-next-line ember/no-runloop
       scheduleOnce('afterRender', this, CALLBACK, transition);
     } else {
       whenRouteIdle().then(() => {

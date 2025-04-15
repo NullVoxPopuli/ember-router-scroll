@@ -1,4 +1,3 @@
-/* global module, process */
 'use strict';
 
 if (typeof module !== 'undefined') {

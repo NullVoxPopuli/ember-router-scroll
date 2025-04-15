@@ -5,50 +5,50 @@ body {
 }
 
 #death-star {
-  position:absolute;
+  position: absolute;
   margin: 1550px auto 0 60%;
-  width:75px;
+  width: 75px;
 }
 
 #monster {
-  bottom:0;
+  bottom: 0;
   position: absolute;
   margin: 0 auto 0 60%;
   width: 175px;
 }
 
 #ocean {
-   background: linear-gradient(to top, black, #000055, #00DCFF);
-   position: absolute;
-   width:100%;
-   height:3960px;
+  background: linear-gradient(to top, black, #000055, #00dcff);
+  position: absolute;
+  width: 100%;
+  height: 3960px;
 }
 
 #space {
-  background: linear-gradient(to top, #00DCFF, #000055, #000022, black);
+  background: linear-gradient(to top, #00dcff, #000055, #000022, black);
   position: absolute;
-  width:100%;
-  height:3960px;
+  width: 100%;
+  height: 3960px;
 }
 
 #stars {
   background: url(../images/stars.png) repeat;
   position: absolute;
-  width:100%;
-  height:3600px;
+  width: 100%;
+  height: 3600px;
 }
 
 #submarine {
-  display:block;
-  position:fixed;
-  top:50%;
-  right:33%;
-  width:150px;
+  display: block;
+  position: fixed;
+  top: 50%;
+  right: 33%;
+  width: 150px;
 }
 
 div {
-  color:white;
-  font-family:vt323;
+  color: white;
+  font-family: vt323;
 }
 
 #intro {
@@ -85,7 +85,7 @@ div {
   transform: scaleX(-1);
   filter: FlipH;
   -ms-filter: "FlipH";
-  left:33%;
+  left: 33%;
 }
 
 .small {
@@ -94,7 +94,7 @@ div {
 }
 
 .left {
-    margin: 300px 0 0 10%;
+  margin: 300px 0 0 10%;
 }
 .right {
   margin: 300px 0 0 75%;

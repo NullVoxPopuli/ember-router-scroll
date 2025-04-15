@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-function-type */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Since ember-app-scheduler is just one file,
  * and a v1 addon,
@@ -30,6 +32,7 @@ const APP_SCHEDULER_HAS_SETUP: string = '__APP_SCHEDULER_HAS_SETUP__';
 let _whenRouteDidChange: Deferred;
 let _whenRouteIdle: Promise<unknown>;
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 const IS_FASTBOOT = typeof (<any>window).FastBoot !== 'undefined';
 const waiter = buildWaiter('ember-app-scheduler-waiter');
 
@@ -55,6 +58,7 @@ export function beginTransition(): void {
       const scheduledWorkToken: Token = waiter.beginAsync();
 
       return new Promise((resolve) => {
+        // eslint-disable-next-line ember/no-runloop
         schedule('afterRender', null, () => {
           requestAnimationFrame(() => {
             requestAnimationFrame(resolve);
@@ -79,6 +83,7 @@ export function beginTransition(): void {
  * @return {void}
  */
 export function endTransition(): void {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   _whenRouteDidChange.resolve();
   mark('appSchedulerStart');
 }
@@ -93,15 +98,15 @@ export function endTransition(): void {
  * @return {void}
  */
 export function setupRouter(router: RouterService): void {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   if (IS_FASTBOOT || (router as any)[APP_SCHEDULER_HAS_SETUP]) {
     return;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   (router as any)[APP_SCHEDULER_HAS_SETUP] = true;
 
-  // @ts-ignore
   addListener(router, 'routeWillChange', beginTransition);
-  // @ts-ignore
   addListener(router, 'routeDidChange', endTransition);
 
   registerDestructor(router, reset);
@@ -121,6 +126,7 @@ export function reset(): void {
   waiter.reset();
 
   if (!IS_FASTBOOT) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     _whenRouteDidChange.resolve();
   }
 }
@@ -148,19 +154,19 @@ export function routeSettled(): Promise<any> {
   return _whenRouteIdle;
 }
 
-function _defer(label: string): Deferred {
+function _defer(): Deferred {
   let _isResolved = false;
   let _resolve!: () => void;
   let _reject!: () => void;
 
-  const promise = new Promise((resolve, reject) => {
+  const promise = new Promise<void>((resolve, reject) => {
     _resolve = () => {
       _isResolved = true;
 
       resolve();
     };
     _reject = reject;
-  }, label);
+  });
 
   return {
     promise,
@@ -177,6 +183,8 @@ function mark(markName: string): void {
     performance.mark(markName);
   } catch (ex) {
     console.warn(
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       `performance.mark could not be executed because of ${ex.message}`,
     );
   }
@@ -191,6 +199,11 @@ function measure(
     performance.measure(measureName, startMark, endMark);
   } catch (ex) {
     console.warn(
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      `performance.mark could not be executed because of ${ex.message}`,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       `performance.measure could not be executed because of ${ex.message}`,
     );
   }
