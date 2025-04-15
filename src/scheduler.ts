@@ -53,7 +53,7 @@ export default scheduler;
  */
 export function beginTransition(): void {
   if (_whenRouteDidChange.isResolved) {
-    _whenRouteDidChange = _defer(APP_SCHEDULER_LABEL);
+    _whenRouteDidChange = _defer();
     _whenRouteIdle = _whenRouteDidChange.promise.then(() => {
       const scheduledWorkToken: Token = waiter.beginAsync();
 
@@ -120,7 +120,7 @@ export function setupRouter(router: RouterService): void {
  * @return {void}
  */
 export function reset(): void {
-  _whenRouteDidChange = _defer(APP_SCHEDULER_LABEL);
+  _whenRouteDidChange = _defer();
   _whenRouteIdle = _whenRouteDidChange.promise.then();
 
   waiter.reset();
