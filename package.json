@@ -11,8 +11,10 @@
   "files": [
     "addon-main.cjs",
     "declarations",
-    "dist"
+    "dist",
+    "src"
   ],
+  "packageManager": "pnpm@10.8.1",
   "scripts": {
     "build": "rollup --config",
     "format": "prettier . --cache --write",
