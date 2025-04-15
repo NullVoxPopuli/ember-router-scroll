@@ -28,7 +28,6 @@ module('Acceptance | basic functionality', function (hooks) {
     assert.strictEqual(container.scrollTop, 0, 'starts at the top of the page');
 
     document.getElementById('monster').scrollIntoView(false);
-    await this.pauseTest();
     assert.ok(container.scrollTop > 0, 'has scrolled a smidge');
 
     await click('a[href="/next-page"]');

@@ -4,6 +4,8 @@ import EmberRouter from '@ember/routing/router';
 import Route from '@ember/routing/route';
 import Controller from '@ember/controller';
 
+import RouterScrollService from '../src/services/router-scroll';
+
 import ApplicationTemplate from './test-app/application.gjs';
 import NextPageTemplate from './test-app/next-page.gjs';
 import TargetNextPageTemplate from './test-app/target-next-page.gjs';
@@ -31,6 +33,7 @@ class TestApp extends EmberApp {
     'test-app/templates/target': { default: TargetTemplate },
     'test-app/templates/target-next-page': { default: TargetNextPageTemplate },
     'test-app/templates/next-page': { default: NextPageTemplate },
+    'test-app/services/router-scroll': { default: RouterScrollService },
     // add any custom services here
   });
 }
