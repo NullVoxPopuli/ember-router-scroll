@@ -22,7 +22,6 @@ jobs:
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 18
           cache: pnpm
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
@@ -41,7 +40,6 @@ jobs:
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 18
           cache: pnpm
       - name: Install Dependencies
         run: pnpm install --no-lockfile
@@ -71,7 +69,6 @@ jobs:
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 18
           cache: pnpm
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
