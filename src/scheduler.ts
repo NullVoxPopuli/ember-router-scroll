@@ -26,7 +26,6 @@ interface Deferred {
   reject: Function;
 }
 
-const APP_SCHEDULER_LABEL: string = 'ember-app-scheduler';
 const APP_SCHEDULER_HAS_SETUP: string = '__APP_SCHEDULER_HAS_SETUP__';
 
 let _whenRouteDidChange: Deferred;

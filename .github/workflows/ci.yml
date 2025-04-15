@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   lint:
-    name: "Tests"
+    name: "Lints"
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -87,4 +87,4 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
       - name: Run Tests
-        run: ./node_modules/.bin/ember try:one ${{ matrix.try-scenario }} --skip-cleanup
+        run: npx ember-cli try:one ${{ matrix.try-scenario }} --skip-cleanup
