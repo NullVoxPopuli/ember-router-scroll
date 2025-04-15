@@ -6,6 +6,7 @@ declarations/
 *.tgz
 
 # deps & caches
+.DS_Store
 node_modules/
 .eslintcache
 .prettiercache
