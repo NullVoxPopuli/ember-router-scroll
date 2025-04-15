@@ -25,10 +25,11 @@ module('Acceptance | basic functionality', function (hooks) {
 
     // testing specific
     let container = document.getElementById('ember-testing-container');
-    assert.strictEqual(container.scrollTop, 0);
+    assert.strictEqual(container.scrollTop, 0, 'starts at the top of the page');
 
     document.getElementById('monster').scrollIntoView(false);
-    assert.ok(container.scrollTop > 0);
+    await this.pauseTest();
+    assert.ok(container.scrollTop > 0, 'has scrolled a smidge');
 
     await click('a[href="/next-page"]');
     assert.strictEqual(currentURL(), '/next-page');
