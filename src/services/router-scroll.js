@@ -1,4 +1,4 @@
-import Service, { inject as service } from '@ember/service';
+import Service, { service } from '@ember/service';
 import { set, get, action } from '@ember/object';
 import { typeOf } from '@ember/utils';
 import { assert } from '@ember/debug';
