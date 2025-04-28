@@ -2,17 +2,17 @@
   "solution": {
     "@nullvoxpopuli/ember-router-scroll": {
       "impact": "patch",
-      "oldVersion": "0.0.0",
-      "newVersion": "0.0.1",
+      "oldVersion": "0.0.1",
+      "newVersion": "0.0.2",
       "tagName": "latest",
       "constraints": [
         {
           "impact": "patch",
-          "reason": "Appears in changelog section :house: Internal"
+          "reason": "Appears in changelog section :bug: Bug Fix"
         }
       ],
       "pkgJSONPath": "./package.json"
     }
   },
-  "description": "## Release (2025-04-15)\n\n* @nullvoxpopuli/ember-router-scroll 0.0.1 (patch)\n\n#### :house: Internal\n* `@nullvoxpopuli/ember-router-scroll`\n  * [#2](https://github.com/NullVoxPopuli/ember-router-scroll/pull/2) npx create-release-plan-setup@latest --update ([@NullVoxPopuli](https://github.com/NullVoxPopuli))\n\n#### Committers: 1\n- [@NullVoxPopuli](https://github.com/NullVoxPopuli)\n"
+  "description": "## Release (2025-04-28)\n\n* @nullvoxpopuli/ember-router-scroll 0.0.2 (patch)\n\n#### :bug: Bug Fix\n* `@nullvoxpopuli/ember-router-scroll`\n  * [#5](https://github.com/NullVoxPopuli/ember-router-scroll/pull/5) Inject as Service Deprecation Warning Fix ([@khaitu](https://github.com/khaitu))\n\n#### Committers: 1\n- Khaitu ([@khaitu](https://github.com/khaitu))\n"
 }

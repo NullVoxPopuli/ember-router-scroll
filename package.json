@@ -1,6 +1,6 @@
 {
   "name": "@nullvoxpopuli/ember-router-scroll",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "The default blueprint for Embroider v2 addons.",
   "keywords": [
     "ember-addon"
