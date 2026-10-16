@@ -35,7 +35,7 @@ interface ScrollTransition {
     currentRouteInfos?: {
       route: {
         controller: {
-          preserveScrollPosition?: boolean;
+          preserveScrollPosition?: unknown;
         };
       };
     }[];
@@ -174,11 +174,24 @@ class RouterScroll extends Service {
 
     const scrollPosition = this.position;
 
-    // If `preserveScrollPosition` was not set on the controller, attempt fallback to `preserveScrollPosition` which was set on the router service.
-    const preserveScrollPosition =
-      (transition.router.currentRouteInfos || []).some(
-        (routeInfo) => routeInfo.route.controller.preserveScrollPosition,
-      ) || this.preserveScrollPosition;
+    /**
+     * Route infos go from parent to child,
+     * so the most deeply nested controller that sets a boolean wins.
+     * A child can set `false` to scroll when its parent preserves.
+     *
+     * `true` on the router service still preserves for every route.
+     */
+    let preserveScrollPosition = false;
+
+    for (const routeInfo of transition.router.currentRouteInfos || []) {
+      const value = routeInfo.route.controller.preserveScrollPosition;
+
+      if (typeof value === "boolean") {
+        preserveScrollPosition = value;
+      }
+    }
+
+    preserveScrollPosition ||= this.preserveScrollPosition;
 
     if (!preserveScrollPosition) {
       const { scrollElement, targetElement, currentURL } = this;
