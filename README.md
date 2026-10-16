@@ -11,6 +11,9 @@ Compatibility:
 - ember-auto-import @ v2+ OR embroider OR vite
 - ember-source ??
 
+This library imports `getOwner` from `@ember/owner`.
+If your ember-source is older than 4.12, add [babel-plugin-ember-polyfill-get-and-set-owner-from-ember-owner](https://github.com/NullVoxPopuli/ember-polyfill-get-and-set-owner-from-ember-owner) to your app.
+
 ## Installation
 
 ```bash
