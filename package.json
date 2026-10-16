@@ -11,7 +11,6 @@
   },
   "license": "MIT",
   "author": "",
-  "type": "module",
   "imports": {
     "#src/*": "./src/*"
   },
