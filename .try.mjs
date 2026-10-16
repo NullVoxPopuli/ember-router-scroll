@@ -1,3 +1,14 @@
+/**
+ * babel-plugin-ember-template-compilation 2.x cannot find the
+ * template compiler in ember-source 7.
+ *
+ * The default install keeps 2.x, because 3.x and later are async
+ * and the ESLint babel parser in ember-eslint 0.2 runs babel synchronously.
+ */
+const emberSevenDependencies = {
+  'babel-plugin-ember-template-compilation': '^4.0.1',
+};
+
 export default scenarios();
 
 function scenarios() {
@@ -33,6 +44,7 @@ function scenarios() {
         npm: {
           devDependencies: {
             'ember-source': 'npm:ember-source@latest',
+            ...emberSevenDependencies,
           },
         },
       },
@@ -41,6 +53,7 @@ function scenarios() {
         npm: {
           devDependencies: {
             'ember-source': 'npm:ember-source@beta',
+            ...emberSevenDependencies,
           },
         },
       },
@@ -49,6 +62,7 @@ function scenarios() {
         npm: {
           devDependencies: {
             'ember-source': 'npm:ember-source@alpha',
+            ...emberSevenDependencies,
           },
         },
       },
