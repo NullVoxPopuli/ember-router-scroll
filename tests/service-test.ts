@@ -197,6 +197,84 @@ module("router-scroll", function (hooks) {
     assert.verifySteps([], "Scroll To should not be called");
   });
 
+  /**
+   * A transition whose route infos go from parent to child,
+   * one per controller.
+   */
+  function nestedTransition(controllers: { preserveScrollPosition?: unknown }[]) {
+    return {
+      router: {
+        currentRouteInfos: controllers.map((controller) => ({ route: { controller } })),
+      },
+    };
+  }
+
+  /**
+   * The service scrolls in a requestAnimationFrame callback,
+   * so waiting one more frame shows whether it scrolled.
+   */
+  function nextFrame() {
+    return new Promise((resolve) => requestAnimationFrame(resolve));
+  }
+
+  test("Update Scroll Position: A child controller can scroll when its parent preserves", function (assert) {
+    const done = assert.async();
+
+    stubScrollTo((x, y) => {
+      assert.step(`scrollTo ${x} ${y}`);
+      assert.verifySteps(["scrollTo 0 0"], "the child's false wins over the parent's true");
+      done();
+    });
+
+    const routerScrollService = this.owner.lookup("service:router-scroll");
+    routerScrollService.scrollElement = "window";
+
+    subject = this.owner.lookup("service:router");
+    subject.trigger(
+      "routeDidChange",
+      nestedTransition([{ preserveScrollPosition: true }, { preserveScrollPosition: false }]),
+    );
+  });
+
+  test("Update Scroll Position: A child controller without the property keeps the parent's choice", async function (assert) {
+    window.scrollTo = () => {
+      assert.step("scrollTo");
+    };
+
+    const routerScrollService = this.owner.lookup("service:router-scroll");
+    routerScrollService.scrollElement = "window";
+
+    subject = this.owner.lookup("service:router");
+    subject.trigger(
+      "routeDidChange",
+      nestedTransition([{ preserveScrollPosition: true }, {}, { preserveScrollPosition: "yes" }]),
+    );
+    await settled();
+    await nextFrame();
+
+    assert.verifySteps([], "Scroll To should not be called");
+  });
+
+  test("Update Scroll Position: The router service preserves even when a child sets false", async function (assert) {
+    window.scrollTo = () => {
+      assert.step("scrollTo");
+    };
+
+    const routerScrollService = this.owner.lookup("service:router-scroll");
+    routerScrollService.scrollElement = "window";
+    routerScrollService.preserveScrollPosition = true;
+
+    subject = this.owner.lookup("service:router");
+    subject.trigger(
+      "routeDidChange",
+      nestedTransition([{ preserveScrollPosition: false }, { preserveScrollPosition: false }]),
+    );
+    await settled();
+    await nextFrame();
+
+    assert.verifySteps([], "Scroll To should not be called");
+  });
+
   test("Update Scroll Position: URL is an anchor", function (assert) {
     const done = assert.async();
 

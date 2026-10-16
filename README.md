@@ -250,6 +250,10 @@ export default class MyController extends Controller {
 }
 ```
 
+When routes are nested, the most deeply nested active controller that sets `preserveScrollPosition` to `true` or
+`false` wins. So a child controller can set `preserveScrollPosition = false` to scroll even when a parent controller
+sets it to `true`. Controllers that do not set the property, or set a value that is not a boolean, have no effect.
+
 **2.** Reset preserveScrollPosition if necessary
 
 If your controller is changing the preserveScrollPosition property, you'll probably need to reset
