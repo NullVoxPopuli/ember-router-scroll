@@ -1,6 +1,7 @@
 import { LinkTo } from '@ember/routing';
+import type { TOC } from '@ember/component/template-only';
 
-<template>
+const TargetNextPage: TOC<{ Args: object }> = <template>
   <div id="space">
     <div id="nav">
       Nav Bar
@@ -55,4 +56,6 @@ import { LinkTo } from '@ember/routing';
       class="flip"
       id="submarine"
     /></LinkTo>
-</template>
+</template>;
+
+export default TargetNextPage;

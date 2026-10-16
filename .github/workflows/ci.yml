@@ -22,6 +22,7 @@ jobs:
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
+          node-version: 22
           cache: pnpm
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
@@ -40,13 +41,17 @@ jobs:
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
+          node-version: 22
           cache: pnpm
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
       - name: Run Tests
         run: pnpm test
+      # For the Try Scenarios
       - id: set-matrix
-        run: echo "matrix=$(pnpm -s dlx @embroider/try list)" >> $GITHUB_OUTPUT
+        run: |
+           echo "matrix=$(pnpm -s dlx @embroider/try list)" >> $GITHUB_OUTPUT
+
 
   floating:
     name: "Floating Dependencies"
@@ -58,32 +63,37 @@ jobs:
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
+          node-version: 22
           cache: pnpm
       - name: Install Dependencies
         run: pnpm install --no-lockfile
       - name: Run Tests
         run: pnpm test
 
-  compatibility:
-    needs: ["test"]
+  try-scenarios:
+    name: ${{ matrix.name }}
     runs-on: ubuntu-latest
+    needs: "test"
     timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix: ${{fromJson(needs.test.outputs.matrix)}}
-
-    name: "${{ matrix.name }}"
 
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
+          node-version: 22
           cache: pnpm
       - name: Apply Scenario
-        run: pnpm dlx @embroider/try apply ${{ matrix.name }}
+        run: |
+           pnpm dlx @embroider/try apply ${{ matrix.name }}
+
       - name: Install Dependencies
         run: pnpm install --no-lockfile
       - name: Run Tests
-        run: pnpm test
+        run: |
+          pnpm test
+
         env: ${{ matrix.env }}

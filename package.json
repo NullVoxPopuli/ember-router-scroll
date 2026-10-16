@@ -11,22 +11,18 @@
   },
   "license": "MIT",
   "author": "",
+  "imports": {
+    "#src/*": "./src/*"
+  },
   "exports": {
     ".": {
       "types": "./declarations/index.d.ts",
       "default": "./dist/index.js"
     },
+    "./addon-main.js": "./addon-main.cjs",
     "./*": {
       "types": "./declarations/*.d.ts",
       "default": "./dist/*.js"
-    },
-    "./addon-main.js": "./addon-main.cjs"
-  },
-  "typesVersions": {
-    "*": {
-      "*": [
-        "declarations/*"
-      ]
     }
   },
   "files": [
@@ -43,52 +39,64 @@
     "lint:format": "prettier . --cache --check",
     "lint:hbs": "ember-template-lint . --no-error-on-unmatched-pattern",
     "lint:hbs:fix": "ember-template-lint . --fix --no-error-on-unmatched-pattern",
-    "lint:js": "eslint . --cache",
+    "lint:js": "eslint .",
     "lint:js:fix": "eslint . --fix",
-    "lint:types": "glint",
+    "lint:publish": "pnpm build && publint run --level error",
+    "lint:types": "ember-tsc --noEmit",
     "prepack": "rollup --config",
     "start": "vite dev",
-    "test": "vite build --mode=development && testem --file testem.js ci"
+    "test": "vite build --mode=development --out-dir dist-tests && testem --file testem.cjs ci --port 0"
   },
   "dependencies": {
-    "@ember/test-waiters": "^4.1.0",
-    "@embroider/addon-shim": "^1.8.9",
-    "decorator-transforms": "^2.2.2"
+    "@ember/test-waiters": "^4.1.2",
+    "@embroider/addon-shim": "^1.10.3",
+    "decorator-transforms": "^2.4.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.25.2",
-    "@babel/plugin-transform-typescript": "^7.25.2",
-    "@babel/runtime": "^7.25.6",
-    "@ember/library-tsconfig": "^1.0.0",
-    "@ember/test-helpers": "^5.2.1",
-    "@embroider/addon-dev": "^7.1.0",
-    "@embroider/core": "^4.0.0-alpha.10",
-    "@embroider/macros": "^1.17.0-alpha.8",
-    "@embroider/vite": "^1.0.0-alpha.12",
-    "@glimmer/component": "^2.0.0",
-    "@glint/core": "^1.4.0",
-    "@glint/environment-ember-loose": "^1.4.0",
-    "@glint/environment-ember-template-imports": "^1.4.0",
-    "@glint/template": "^1.4.0",
-    "@rollup/plugin-babel": "^6.0.4",
-    "babel-plugin-ember-template-compilation": "^2.2.5",
-    "concurrently": "^9.0.1",
-    "ember-eslint": "^0.2.1",
-    "ember-qunit": "^9.0.2",
-    "ember-resolver": "^13.1.0",
-    "ember-source": "^6.3.0",
-    "ember-template-lint": "^6.0.0",
-    "eslint": "^9.17.0",
-    "globals": "^15.14.0",
-    "prettier": "^3.4.2",
-    "prettier-plugin-ember-template-tag": "^2.0.4",
-    "qunit": "^2.24.1",
-    "qunit-dom": "^3.4.0",
+    "@babel/core": "^7.29.7",
+    "@babel/eslint-parser": "^7.29.9",
+    "@babel/plugin-transform-typescript": "^7.29.9",
+    "@babel/runtime": "^7.29.10",
+    "@ember/app-tsconfig": "^1.0.3",
+    "@ember/library-tsconfig": "^1.1.3",
+    "@ember/test-helpers": "^5.7.0",
+    "@embroider/addon-dev": "^8.4.2",
+    "@embroider/compat": "^4.1.27",
+    "@embroider/core": "^4.6.9",
+    "@embroider/macros": "^1.21.3",
+    "@embroider/vite": "^1.7.15",
+    "@eslint/js": "^9.39.5",
+    "@glimmer/component": "^2.1.1",
+    "@glint/ember-tsc": "^1.11.6",
+    "@glint/template": "^1.9.0",
+    "@glint/tsserver-plugin": "^2.7.9",
+    "@rollup/plugin-babel": "^6.1.0",
+    "@types/qunit": "^2.19.14",
+    "babel-plugin-ember-template-compilation": "^4.0.1",
+    "concurrently": "^9.2.5",
+    "ember-page-title": "^9.0.3",
+    "ember-qunit": "^9.2.0",
+    "ember-route-template": "^1.0.3",
+    "ember-source": "^6.12.1",
+    "ember-strict-application-resolver": "^0.1.1",
+    "ember-template-lint": "^7.9.4",
+    "eslint": "^9.39.5",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-ember": "^12.7.5",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-n": "^17.24.0",
+    "globals": "^16.5.0",
+    "prettier": "^3.9.10",
+    "prettier-plugin-ember-template-tag": "^2.1.8",
+    "publint": "^0.3.25",
+    "qunit": "^2.26.0",
+    "qunit-dom": "^3.6.0",
     "release-plan": "^0.16.0",
-    "rollup": "^4.22.5",
-    "testem": "^3.15.1",
-    "typescript": "~5.6.0",
-    "vite": "^6.2.4"
+    "rollup": "^4.64.7",
+    "testem": "^3.21.3",
+    "typescript": "~5.8.3",
+    "typescript-eslint": "^8.71.2",
+    "vite": "^7.3.7"
   },
   "peerDependencies": {
     "ember-source": ">= 4.12.0"
@@ -102,7 +110,6 @@
     "type": "addon",
     "main": "addon-main.cjs",
     "app-js": {
-      "./instance-initializers/ember-router-scroll.js": "./dist/_app_/instance-initializers/ember-router-scroll.js",
       "./services/router-scroll.js": "./dist/_app_/services/router-scroll.js"
     }
   }

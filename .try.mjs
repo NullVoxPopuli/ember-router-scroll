@@ -1,71 +1,87 @@
-/**
- * babel-plugin-ember-template-compilation 2.x cannot find the
- * template compiler in ember-source 7.
- *
- * The default install keeps 2.x, because 3.x and later are async
- * and the ESLint babel parser in ember-eslint 0.2 runs babel synchronously.
- */
-const emberSevenDependencies = {
-  'babel-plugin-ember-template-compilation': '^4.0.1',
+// When building your addon for older Ember versions you need to have the required files
+const compatFiles = {
+  'ember-cli-build.cjs': `const EmberApp = require('ember-cli/lib/broccoli/ember-app');
+const { compatBuild } = require('@embroider/compat');
+module.exports = async function (defaults) {
+  const { buildOnce } = await import('@embroider/vite');
+  let app = new EmberApp(defaults);
+  return compatBuild(app, buildOnce);
+};`,
+  'config/optional-features.json': JSON.stringify({
+    'application-template-wrapper': false,
+    'default-async-observers': true,
+    'jquery-integration': false,
+    'template-only-glimmer-components': true,
+    'no-implicit-route-model': true,
+  }),
 };
 
-export default scenarios();
+const compatDeps = {
+  '@embroider/compat': '^4.0.3',
+  'ember-cli': '^5.12.0',
+  'ember-auto-import': '^2.10.0',
+  '@ember/optional-features': '^2.2.0',
+};
 
-function scenarios() {
-  return {
-    scenarios: [
-      // Failed to import ember-testing
-      // {
-      //   name: 'ember-3.28',
-      //   npm: {
-      //     devDependencies: {
-      //       'ember-source': 'npm:ember-source@3.28',
-      //     },
-      //   },
-      // },
-      // {
-      //   name: 'ember-4.12',
-      //   npm: {
-      //     devDependencies: {
-      //       'ember-source': 'npm:ember-source@4.12',
-      //     },
-      //   },
-      // },
-      // {
-      //   name: 'ember-5.12',
-      //   npm: {
-      //     devDependencies: {
-      //       'ember-source': 'npm:ember-source@5.12',
-      //     },
-      //   },
-      // },
-      {
-        name: 'ember-latest',
-        npm: {
-          devDependencies: {
-            'ember-source': 'npm:ember-source@latest',
-            ...emberSevenDependencies,
-          },
+export default {
+  scenarios: [
+    {
+      name: 'ember-lts-5.8',
+      npm: {
+        devDependencies: {
+          'ember-source': '~5.8.0',
+          ...compatDeps,
         },
       },
-      {
-        name: 'ember-beta',
-        npm: {
-          devDependencies: {
-            'ember-source': 'npm:ember-source@beta',
-            ...emberSevenDependencies,
-          },
+      env: {
+        ENABLE_COMPAT_BUILD: true,
+      },
+      files: compatFiles,
+    },
+    {
+      name: 'ember-lts-5.12',
+      npm: {
+        devDependencies: {
+          'ember-source': '~5.12.0',
+          ...compatDeps,
         },
       },
-      {
-        name: 'ember-canary',
-        npm: {
-          devDependencies: {
-            'ember-source': 'npm:ember-source@alpha',
-            ...emberSevenDependencies,
-          },
+      env: {
+        ENABLE_COMPAT_BUILD: true,
+      },
+      files: compatFiles,
+    },
+    {
+      name: 'ember-lts-6.4',
+      npm: {
+        devDependencies: {
+          'ember-source': 'npm:ember-source@~6.4.0',
         },
       },
-    ],
-  };
-}
+    },
+    {
+      name: 'ember-latest',
+      npm: {
+        devDependencies: {
+          'ember-source': 'npm:ember-source@latest',
+        },
+      },
+    },
+    {
+      name: 'ember-beta',
+      npm: {
+        devDependencies: {
+          'ember-source': 'npm:ember-source@beta',
+        },
+      },
+    },
+    {
+      name: 'ember-alpha',
+      npm: {
+        devDependencies: {
+          'ember-source': 'npm:ember-source@alpha',
+        },
+      },
+    },
+  ],
+};

@@ -1,6 +1,7 @@
 import { LinkTo } from '@ember/routing';
+import type { TOC } from '@ember/component/template-only';
 
-<template>
+const NextPage: TOC<{ Args: object }> = <template>
   <div id="space">
     <div id="stars">
       <div id="intro">
@@ -53,4 +54,6 @@ import { LinkTo } from '@ember/routing';
       </div>
     </div>
   </div>
-</template>
+</template>;
+
+export default NextPage;
