@@ -9,7 +9,7 @@ Does not depend on ember-app-scheduler (which is a v1 addon)
 Compatibility:
 
 - ember-auto-import @ v2+ OR embroider OR vite
-- ember-source ??
+- ember-source >= 4.12 (every LTS from 4.12 through 6.12 is tested in CI, as well as the release, beta and canary channels)
 
 ## Installation
 

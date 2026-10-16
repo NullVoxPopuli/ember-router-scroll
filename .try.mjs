@@ -23,44 +23,38 @@ const compatDeps = {
   '@ember/optional-features': '^2.2.0',
 };
 
+/**
+ * Every LTS from the minimum supported version (4.12) up to the latest LTS,
+ * plus the release, beta and canary channels.
+ *
+ * Versions before 6.3 can't use the vite build natively, so they go through
+ * the Embroider compat build.
+ */
+const ltsVersions = ['4.12', '5.4', '5.8', '5.12', '6.4', '6.8', '6.12'];
+
+function lts(version) {
+  const [major, minor] = version.split('.').map(Number);
+  const needsCompat = major < 6 || (major === 6 && minor < 3);
+
+  return {
+    name: `ember-lts-${version}`,
+    npm: {
+      devDependencies: {
+        'ember-source': `npm:ember-source@~${version}.0`,
+        ...(needsCompat ? compatDeps : {}),
+      },
+    },
+    ...(needsCompat
+      ? { env: { ENABLE_COMPAT_BUILD: true }, files: compatFiles }
+      : {}),
+  };
+}
+
 export default {
   scenarios: [
+    ...ltsVersions.map(lts),
     {
-      name: 'ember-lts-5.8',
-      npm: {
-        devDependencies: {
-          'ember-source': '~5.8.0',
-          ...compatDeps,
-        },
-      },
-      env: {
-        ENABLE_COMPAT_BUILD: true,
-      },
-      files: compatFiles,
-    },
-    {
-      name: 'ember-lts-5.12',
-      npm: {
-        devDependencies: {
-          'ember-source': '~5.12.0',
-          ...compatDeps,
-        },
-      },
-      env: {
-        ENABLE_COMPAT_BUILD: true,
-      },
-      files: compatFiles,
-    },
-    {
-      name: 'ember-lts-6.4',
-      npm: {
-        devDependencies: {
-          'ember-source': 'npm:ember-source@~6.4.0',
-        },
-      },
-    },
-    {
-      name: 'ember-latest',
+      name: 'ember-release',
       npm: {
         devDependencies: {
           'ember-source': 'npm:ember-source@latest',
@@ -76,7 +70,7 @@ export default {
       },
     },
     {
-      name: 'ember-alpha',
+      name: 'ember-canary',
       npm: {
         devDependencies: {
           'ember-source': 'npm:ember-source@alpha',
