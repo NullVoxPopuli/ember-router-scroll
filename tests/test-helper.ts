@@ -1,4 +1,3 @@
-/// <reference types="vite/client" />
 import EmberRouter from "@ember/routing/router";
 import Route from "@ember/routing/route";
 import Controller from "@ember/controller";

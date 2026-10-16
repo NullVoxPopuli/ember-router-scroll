@@ -6,7 +6,7 @@
     "declarationMap": false,
     "emitDeclarationOnly": false,
     "lib": ["esnext", "dom", "dom.iterable"],
-    "types": ["ember-source/types", "@glint/ember-tsc/types"]
+    "types": ["ember-source/types", "@glint/ember-tsc/types", "vite/client"]
   },
   "contentMappers": [
     {
