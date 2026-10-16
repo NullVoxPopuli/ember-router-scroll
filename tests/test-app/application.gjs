@@ -1,5 +1,5 @@
-import { LinkTo } from '@ember/routing';
-import { hash } from '@ember/helper';
+import { LinkTo } from "@ember/routing";
+import { hash } from "@ember/helper";
 
 const not = (x) => !x;
 

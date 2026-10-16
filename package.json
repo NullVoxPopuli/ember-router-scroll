@@ -13,11 +13,11 @@
   "author": "",
   "exports": {
     ".": {
-      "types": "./declarations/index.d.ts",
+      "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
     "./*": {
-      "types": "./declarations/*.d.ts",
+      "types": "./dist/*.d.ts",
       "default": "./dist/*.js"
     },
     "./addon-main.js": "./addon-main.cjs"
@@ -25,70 +25,70 @@
   "typesVersions": {
     "*": {
       "*": [
-        "declarations/*"
+        "dist/*"
       ]
     }
   },
   "files": [
     "addon-main.cjs",
-    "declarations",
     "dist",
     "src"
   ],
   "scripts": {
-    "build": "rollup --config",
-    "format": "prettier . --cache --write",
+    "build": "tsdown",
+    "format": "prettier --write .",
     "lint": "concurrently \"pnpm:lint:*(!fix)\" --names \"lint:\" --prefixColors auto",
-    "lint:fix": "concurrently \"pnpm:lint:*:fix\" --names \"fix:\" --prefixColors auto && pnpm run format",
-    "lint:format": "prettier . --cache --check",
+    "lint:fix": "concurrently \"pnpm:lint:*:fix\" --names \"fix:\" --prefixColors auto && pnpm format",
     "lint:hbs": "ember-template-lint . --no-error-on-unmatched-pattern",
     "lint:hbs:fix": "ember-template-lint . --fix --no-error-on-unmatched-pattern",
-    "lint:js": "eslint . --cache",
-    "lint:js:fix": "eslint . --fix",
-    "lint:types": "glint",
-    "prepack": "rollup --config",
-    "start": "vite dev",
-    "test": "vite build --mode=development && testem --file testem.js ci"
+    "lint:types": "tsc --noEmit --runExternalCode",
+    "prepack": "tsdown",
+    "start": "tsdown --watch",
+    "lint:eslint": "eslint . --cache",
+    "lint:eslint:fix": "eslint . --fix",
+    "lint:prettier": "prettier --check .",
+    "build:test": "EMBER_ENV=test NODE_ENV=development vite build --mode development",
+    "test:ci": "testem ci --file config/test/testem.cjs --port 0",
+    "test": "pnpm build:test && pnpm test:ci"
   },
   "dependencies": {
-    "@ember/test-waiters": "^4.1.0",
-    "@embroider/addon-shim": "^1.8.9",
-    "decorator-transforms": "^2.2.2"
+    "@ember/test-waiters": "^4.1.2",
+    "@embroider/addon-shim": "^1.10.3",
+    "decorator-transforms": "^2.4.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.25.2",
-    "@babel/plugin-transform-typescript": "^7.25.2",
-    "@babel/runtime": "^7.25.6",
-    "@ember/library-tsconfig": "^1.0.0",
-    "@ember/test-helpers": "^5.2.1",
-    "@embroider/addon-dev": "^7.1.0",
-    "@embroider/core": "^4.0.0-alpha.10",
-    "@embroider/macros": "^1.17.0-alpha.8",
-    "@embroider/vite": "^1.0.0-alpha.12",
-    "@glimmer/component": "^2.0.0",
-    "@glint/core": "^1.4.0",
-    "@glint/environment-ember-loose": "^1.4.0",
-    "@glint/environment-ember-template-imports": "^1.4.0",
-    "@glint/template": "^1.4.0",
-    "@rollup/plugin-babel": "^6.0.4",
-    "babel-plugin-ember-template-compilation": "^2.2.5",
-    "concurrently": "^9.0.1",
-    "ember-eslint": "^0.2.1",
-    "ember-qunit": "^9.0.2",
-    "ember-resolver": "^13.1.0",
-    "ember-source": "^6.3.0",
-    "ember-template-lint": "^6.0.0",
-    "eslint": "^9.17.0",
-    "globals": "^15.14.0",
-    "prettier": "^3.4.2",
-    "prettier-plugin-ember-template-tag": "^2.0.4",
-    "qunit": "^2.24.1",
-    "qunit-dom": "^3.4.0",
+    "@babel/core": "^7.29.7",
+    "@babel/plugin-transform-typescript": "^7.29.9",
+    "@babel/runtime": "^7.29.10",
+    "@ember/library-tsconfig": "^2.0.0",
+    "@ember/test-helpers": "^5.7.0",
+    "@embroider/macros": "^1.21.3",
+    "@glimmer/component": "^2.1.1",
+    "@glint/ember-tsc": "^1.11.6",
+    "@glint/template": "^1.9.0",
+    "@nullvoxpopuli/ember-rolldown": "2.11.0",
+    "@nullvoxpopuli/ember-vite": "1.3.0",
+    "@types/qunit": "^2.19.14",
+    "@typescript/native": "npm:typescript@^7.1.0-dev.20261016.1",
+    "babel-plugin-ember-template-compilation": "^4.0.1",
+    "concurrently": "^9.2.5",
+    "ember-content-mapper": "^0.3.1",
+    "ember-eslint": "^1.0.0",
+    "ember-qunit": "^9.2.0",
+    "ember-resolver": "^13.2.0",
+    "ember-source": "~7.2.1",
+    "ember-template-lint": "^6.1.0",
+    "eslint": "^10.13.0",
+    "prettier": "^3.9.10",
+    "prettier-plugin-ember-template-tag": "^2.1.8",
+    "qunit": "^2.26.0",
+    "qunit-dom": "3.5.0",
+    "qunit-theme-ember": "^1.0.0",
     "release-plan": "^0.16.0",
-    "rollup": "^4.22.5",
-    "testem": "^3.15.1",
-    "typescript": "~5.6.0",
-    "vite": "^6.2.4"
+    "testem": "3.17.0",
+    "tsdown": "^0.22.14",
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
+    "vite": "^8.3.4"
   },
   "peerDependencies": {
     "ember-source": ">= 4.12.0"
@@ -105,5 +105,9 @@
       "./instance-initializers/ember-router-scroll.js": "./dist/_app_/instance-initializers/ember-router-scroll.js",
       "./services/router-scroll.js": "./dist/_app_/services/router-scroll.js"
     }
+  },
+  "type": "module",
+  "imports": {
+    "#src/*": "./src/*"
   }
 }
