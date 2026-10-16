@@ -1,4 +1,4 @@
-import { LinkTo } from '@ember/routing';
+import { LinkTo } from "@ember/routing";
 
 <template>
   <div id="space">
@@ -11,8 +11,7 @@ import { LinkTo } from '@ember/routing';
         Ember-router-scroll has taken you to the top of the page!<br />
         <br />
         <span class="small">
-          Clicking the submarine will take you to the top of the previous page.<br
-          />
+          Clicking the submarine will take you to the top of the previous page.<br />
           Using the back button will take you to your previous scroll position.
         </span>
       </div>

@@ -12,12 +12,12 @@
  *
  */
 
-import { registerDestructor } from '@ember/destroyable';
-import { addListener } from '@ember/object/events';
-import type RouterService from '@ember/routing/router-service';
-import { schedule } from '@ember/runloop';
-import { buildWaiter, type Token } from '@ember/test-waiters';
-import { tracked } from '@glimmer/tracking';
+import { registerDestructor } from "@ember/destroyable";
+import { addListener } from "@ember/object/events";
+import type RouterService from "@ember/routing/router-service";
+import { schedule } from "@ember/runloop";
+import { buildWaiter, type Token } from "@ember/test-waiters";
+import { tracked } from "@glimmer/tracking";
 
 interface Deferred {
   isResolved: boolean;
@@ -26,21 +26,21 @@ interface Deferred {
   reject: Function;
 }
 
-const APP_SCHEDULER_HAS_SETUP: string = '__APP_SCHEDULER_HAS_SETUP__';
+const APP_SCHEDULER_HAS_SETUP: string = "__APP_SCHEDULER_HAS_SETUP__";
 
 let _whenRouteDidChange: Deferred;
 let _whenRouteIdle: Promise<unknown>;
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-const IS_FASTBOOT = typeof (<any>window).FastBoot !== 'undefined';
-const waiter = buildWaiter('ember-app-scheduler-waiter');
+const IS_FASTBOOT = typeof (<any>window).FastBoot !== "undefined";
+const waiter = buildWaiter("ember-app-scheduler-waiter");
 
 reset();
 
 class Scheduler {
   @tracked isIdle = false;
 }
-const scheduler = new Scheduler();
+const scheduler: Scheduler = new Scheduler();
 export default scheduler;
 
 /**
@@ -58,15 +58,15 @@ export function beginTransition(): void {
 
       return new Promise((resolve) => {
         // eslint-disable-next-line ember/no-runloop
-        schedule('afterRender', null, () => {
+        schedule("afterRender", null, () => {
           requestAnimationFrame(() => {
             requestAnimationFrame(resolve);
           });
         });
       }).finally(() => {
         waiter.endAsync(scheduledWorkToken);
-        mark('appSchedulerEnd');
-        measure('appScheduler', 'appSchedulerStart', 'appSchedulerEnd');
+        mark("appSchedulerEnd");
+        measure("appScheduler", "appSchedulerStart", "appSchedulerEnd");
         scheduler.isIdle = true;
       });
     });
@@ -84,7 +84,7 @@ export function beginTransition(): void {
 export function endTransition(): void {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   _whenRouteDidChange.resolve();
-  mark('appSchedulerStart');
+  mark("appSchedulerStart");
 }
 
 /**
@@ -105,8 +105,8 @@ export function setupRouter(router: RouterService): void {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   (router as any)[APP_SCHEDULER_HAS_SETUP] = true;
 
-  addListener(router, 'routeWillChange', beginTransition);
-  addListener(router, 'routeDidChange', endTransition);
+  addListener(router, "routeWillChange", beginTransition);
+  addListener(router, "routeDidChange", endTransition);
 
   registerDestructor(router, reset);
 }
@@ -189,11 +189,7 @@ function mark(markName: string): void {
   }
 }
 
-function measure(
-  measureName: string,
-  startMark: string | undefined,
-  endMark: string | undefined,
-) {
+function measure(measureName: string, startMark: string | undefined, endMark: string | undefined) {
   try {
     performance.measure(measureName, startMark, endMark);
   } catch (ex) {

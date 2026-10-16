@@ -1,20 +1,6 @@
-import { defineConfig } from 'vite';
-import { extensions, ember } from '@embroider/vite';
-import { babel } from '@rollup/plugin-babel';
+import { defineConfig } from "vite";
+import { ember } from "@nullvoxpopuli/ember-vite";
 
 export default defineConfig({
-  plugins: [
-    ember(),
-    babel({
-      babelHelpers: 'inline',
-      extensions,
-    }),
-  ],
-  build: {
-    rollupOptions: {
-      input: {
-        tests: 'tests/index.html',
-      },
-    },
-  },
+  plugins: [ember({ babel: { configFile: "./config/test/babel.config.js" } })],
 });
