@@ -1,6 +1,7 @@
 import { LinkTo } from "@ember/routing";
+import type { TOC } from "@ember/component/template-only";
 
-<template>
+const Target: TOC<object> = <template>
   <div id="ocean">
     <div id="nav">
       Nav Bar
@@ -47,4 +48,6 @@ import { LinkTo } from "@ember/routing";
       alt="Submarine"
       id="submarine"
     /></LinkTo>
-</template>
+</template>;
+
+export default Target;

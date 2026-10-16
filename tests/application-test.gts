@@ -1,15 +1,27 @@
 import { module, test } from "qunit";
 import { setupApplicationTest } from "ember-qunit";
 import { visit, click, currentURL } from "@ember/test-helpers";
+import type EngineInstance from "@ember/engine/instance";
+
+function byId(id: string): HTMLElement {
+  const element = document.getElementById(id);
+
+  if (!element) {
+    throw new Error(`Could not find #${id}`);
+  }
+
+  return element;
+}
 
 module("Acceptance | basic functionality", function (hooks) {
   setupApplicationTest(hooks);
 
-  let config;
+  let config: { routerScroll?: Record<string, string> };
   hooks.beforeEach(function () {
-    config = this.owner.resolveRegistration("config:environment") || {};
+    const owner = this.owner as typeof this.owner & Pick<EngineInstance, "resolveRegistration">;
+    config = (owner.resolveRegistration("config:environment") as typeof config | undefined) || {};
 
-    document.getElementById("ember-testing-container").scrollTop = 0;
+    byId("ember-testing-container").scrollTop = 0;
   });
 
   hooks.afterEach(function () {
@@ -24,10 +36,10 @@ module("Acceptance | basic functionality", function (hooks) {
     await visit("/");
 
     // testing specific
-    let container = document.getElementById("ember-testing-container");
+    const container = byId("ember-testing-container");
     assert.strictEqual(container.scrollTop, 0, "starts at the top of the page");
 
-    document.getElementById("monster").scrollIntoView(false);
+    byId("monster").scrollIntoView(false);
     assert.ok(container.scrollTop > 0, "has scrolled a smidge");
 
     await click('a[href="/next-page"]');
@@ -42,10 +54,10 @@ module("Acceptance | basic functionality", function (hooks) {
     await visit("/target");
 
     // testing specific
-    let container = document.getElementById("ember-testing-container");
+    const container = byId("ember-testing-container");
     assert.strictEqual(container.scrollTop, 0);
 
-    document.getElementById("monster").scrollIntoView(false);
+    byId("monster").scrollIntoView(false);
     assert.ok(container.scrollTop > 0);
 
     await click('a[href="/target-next-page"]');
@@ -59,10 +71,10 @@ module("Acceptance | basic functionality", function (hooks) {
 
     await visit("/");
 
-    let container = document.getElementById("ember-testing-container");
+    const container = byId("ember-testing-container");
     assert.strictEqual(container.scrollTop, 0);
 
-    document.getElementById("monster").scrollIntoView(false);
+    byId("monster").scrollIntoView(false);
     assert.ok(container.scrollTop > 0);
 
     await click("#change-size");

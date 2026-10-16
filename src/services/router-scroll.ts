@@ -1,31 +1,68 @@
 import Service, { service } from "@ember/service";
-import { set, get, action } from "@ember/object";
+import { set, get } from "@ember/object";
 import { typeOf } from "@ember/utils";
 import { assert } from "@ember/debug";
 import { getOwner } from "@ember/application";
 import { scheduleOnce } from "@ember/runloop";
 import { addListener, removeListener, sendEvent } from "@ember/object/events";
+import type Owner from "@ember/owner";
+import type EngineInstance from "@ember/engine/instance";
+import type RouterService from "@ember/routing/router-service";
 import { setupRouter, whenRouteIdle } from "../scheduler.ts";
+
+export interface ScrollPosition {
+  x: number;
+  y: number;
+}
+
+type ScrollMap = Record<string, ScrollPosition>;
+
+interface RouterScrollConfig {
+  scrollElement?: string;
+  targetElement?: string;
+  scrollWhenIdle?: boolean;
+  scrollWhenAfterRender?: boolean;
+}
+
+/**
+ * The parts of a router transition that this service reads.
+ *
+ * `router` is the internal router of the transition,
+ * which the public `Transition` type does not have.
+ */
+interface ScrollTransition {
+  router: {
+    currentRouteInfos?: {
+      route: {
+        controller: {
+          preserveScrollPosition?: boolean;
+        };
+      };
+    }[];
+  };
+}
+
+interface FastBootService {
+  get(key: "isFastBoot"): boolean;
+}
 
 let ATTEMPTS = 0;
 const MAX_ATTEMPTS = 100; // rAF runs every 16ms ideally, so 60x a second
 
-let callbackRequestId;
+let callbackRequestId: number | undefined;
 
 /**
  * By default, we start checking to see if the document height is >= the last known `y` position
  * we want to scroll to.  This is important for content heavy pages that might try to scrollTo
  * before the content has painted
- *
- * @method tryScrollRecursively
- * @param {Function} fn
- * @param {Object} scrollHash
- * @param {Element} [element]
- * @param {string?} url
- * @void
  */
-function tryScrollRecursively(fn, scrollHash, element, url) {
-  let documentHeight;
+function tryScrollRecursively(
+  fn: (x: number, y: number) => void,
+  scrollHash: ScrollPosition,
+  element: HTMLElement | null,
+  url: string | undefined,
+): void {
+  let documentHeight: number;
   // read DOM outside of rAF
   if (element) {
     documentHeight = Math.max(element.scrollHeight, element.offsetHeight, element.clientHeight);
@@ -42,7 +79,7 @@ function tryScrollRecursively(fn, scrollHash, element, url) {
 
   callbackRequestId = window.requestAnimationFrame(() => {
     if (url && url.indexOf("#") > -1) {
-      const hashElement = document.getElementById(url.split("#").pop());
+      const hashElement = document.getElementById(url.split("#").pop() ?? "");
       if (hashElement) {
         scrollHash = { x: hashElement.offsetLeft, y: hashElement.offsetTop };
       }
@@ -59,20 +96,20 @@ function tryScrollRecursively(fn, scrollHash, element, url) {
 }
 
 // to prevent scheduleOnce calling multiple times, give it the same ref to this function
-const CALLBACK = function (transition) {
+const CALLBACK = function (this: RouterScroll, transition: ScrollTransition) {
   this.updateScrollPosition(transition);
 };
 
 class RouterScroll extends Service {
-  @service router;
+  @service declare router: RouterService;
 
-  get isFastBoot() {
-    const fastboot = getOwner(this).lookup("service:fastboot");
+  get isFastBoot(): boolean {
+    const fastboot = getOwner(this)?.lookup("service:fastboot") as FastBootService | undefined;
     return fastboot ? fastboot.get("isFastBoot") : false;
   }
 
-  key;
-  targetElement;
+  key: string | undefined;
+  targetElement: string | undefined;
   scrollElement = "window";
   isFirstLoad = true;
   preserveScrollPosition = false;
@@ -80,16 +117,28 @@ class RouterScroll extends Service {
   scrollWhenIdle = false;
   scrollWhenAfterRender = false;
 
-  constructor() {
-    super(...arguments);
+  declare scrollMap: ScrollMap;
+
+  /**
+   * Set by tests to stand in for the URL of the current page.
+   */
+  declare currentURL?: string;
+
+  /**
+   * Defined on the prototype below, so that tests can redefine it.
+   */
+  declare readonly position: ScrollPosition;
+
+  constructor(owner: Owner) {
+    super(owner);
 
     // https://github.com/ember-app-scheduler/ember-app-scheduler/pull/773
     setupRouter(this.router);
   }
 
   // eslint-disable-next-line ember/classic-decorator-hooks
-  init(...args) {
-    super.init(...args);
+  init(properties: object | undefined): void {
+    super.init(properties);
 
     this._loadConfig();
     set(this, "scrollMap", {
@@ -99,36 +148,34 @@ class RouterScroll extends Service {
       },
     });
 
-    addListener(this.router, "routeWillChange", this._routeWillChange);
-    addListener(this.router, "routeDidChange", this._routeDidChange);
+    addListener(this.router, "routeWillChange", this, "_routeWillChange");
+    addListener(this.router, "routeDidChange", this, "_routeDidChange");
   }
 
-  willDestroy() {
-    removeListener(this.router, "routeWillChange", this._routeWillChange);
-    removeListener(this.router, "routeDidChange", this._routeDidChange);
+  willDestroy(): void {
+    removeListener(this.router, "routeWillChange", this, "_routeWillChange");
+    removeListener(this.router, "routeDidChange", this, "_routeDidChange");
 
     if (callbackRequestId) {
       window.cancelAnimationFrame(callbackRequestId);
     }
 
-    super.willDestroy(...arguments);
+    super.willDestroy();
   }
 
   /**
    * Updates the scroll position
    * it will be a single transition
-   * @method updateScrollPosition
-   * @param {transition|transition[]} transition If before Ember 3.6, this will be an array of transitions, otherwise
    */
-  updateScrollPosition(transition) {
+  updateScrollPosition(transition: ScrollTransition): void {
     if (this.isFirstLoad) {
       this.unsetFirstLoad();
     }
 
-    let scrollPosition = this.position;
+    const scrollPosition = this.position;
 
     // If `preserveScrollPosition` was not set on the controller, attempt fallback to `preserveScrollPosition` which was set on the router service.
-    let preserveScrollPosition =
+    const preserveScrollPosition =
       (transition.router.currentRouteInfos || []).some(
         (routeInfo) => routeInfo.route.controller.preserveScrollPosition,
       ) || this.preserveScrollPosition;
@@ -137,12 +184,12 @@ class RouterScroll extends Service {
       const { scrollElement, targetElement, currentURL } = this;
 
       if (targetElement || "window" === scrollElement) {
-        tryScrollRecursively(window.scrollTo, scrollPosition, null, currentURL);
+        tryScrollRecursively((x, y) => window.scrollTo(x, y), scrollPosition, null, currentURL);
       } else if ("#" === scrollElement.charAt(0)) {
         const element = document.getElementById(scrollElement.substring(1));
 
         if (element) {
-          let fn = (x, y) => {
+          const fn = (x: number, y: number) => {
             element.scrollLeft = x;
             element.scrollTop = y;
           };
@@ -151,11 +198,10 @@ class RouterScroll extends Service {
       }
     }
 
-    sendEvent(this, "didScroll", transition);
+    sendEvent(this, "didScroll", [transition]);
   }
 
-  @action
-  _routeWillChange() {
+  _routeWillChange(): void {
     if (this.isFastBoot) {
       return;
     }
@@ -163,8 +209,7 @@ class RouterScroll extends Service {
     this.update();
   }
 
-  @action
-  _routeDidChange(transition) {
+  _routeDidChange(transition: ScrollTransition): void {
     if (this.isFastBoot) {
       return;
     }
@@ -181,17 +226,17 @@ class RouterScroll extends Service {
       // eslint-disable-next-line ember/no-runloop
       scheduleOnce("afterRender", this, CALLBACK, transition);
     } else {
-      whenRouteIdle().then(() => {
+      void whenRouteIdle().then(() => {
         this.updateScrollPosition(transition);
       });
     }
   }
 
-  unsetFirstLoad() {
+  unsetFirstLoad(): void {
     set(this, "isFirstLoad", false);
   }
 
-  update() {
+  update(): void {
     if (this.isFastBoot || this.isFirstLoad) {
       return;
     }
@@ -200,11 +245,11 @@ class RouterScroll extends Service {
     const targetElement = this.targetElement;
     const scrollMap = this.scrollMap;
     const key = this.key;
-    let x;
-    let y;
+    let x: number | undefined;
+    let y: number | undefined;
 
     if (targetElement) {
-      let element = document.querySelector(targetElement);
+      const element = document.querySelector<HTMLElement>(targetElement);
       if (element) {
         x = element.offsetLeft;
         y = element.offsetTop;
@@ -220,7 +265,7 @@ class RouterScroll extends Service {
       x = window.scrollX;
       y = window.scrollY;
     } else if ("#" === scrollElement.charAt(0)) {
-      let element = document.getElementById(scrollElement.substring(1));
+      const element = document.getElementById(scrollElement.substring(1));
 
       if (element) {
         x = element.scrollLeft;
@@ -231,14 +276,16 @@ class RouterScroll extends Service {
     // only a `key` present after first load
     if (key && "number" === typeOf(x) && "number" === typeOf(y)) {
       set(scrollMap, key, {
-        x,
-        y,
+        x: x as number,
+        y: y as number,
       });
     }
   }
 
-  _loadConfig() {
-    const config = getOwner(this).resolveRegistration("config:environment");
+  _loadConfig(): void {
+    const owner = getOwner(this) as EngineInstance | undefined;
+    const config = owner?.resolveRegistration("config:environment") as
+      { routerScroll?: RouterScrollConfig } | undefined;
 
     if (config && config.routerScroll) {
       const scrollElement = config.routerScroll.scrollElement;
@@ -250,7 +297,7 @@ class RouterScroll extends Service {
       );
 
       if ("string" === typeOf(scrollElement)) {
-        set(this, "scrollElement", scrollElement);
+        set(this, "scrollElement", scrollElement as string);
       }
 
       if ("string" === typeOf(targetElement)) {
@@ -266,15 +313,21 @@ class RouterScroll extends Service {
 
 Object.defineProperty(RouterScroll.prototype, "position", {
   configurable: true,
-  get() {
+  get(this: RouterScroll): ScrollPosition {
     const scrollMap = this.scrollMap;
-    const stateUuid = window.history.state?.uuid;
+    const stateUuid = (window.history.state as { uuid?: string } | null)?.uuid;
 
     set(this, "key", stateUuid);
     const key = this.key || "-1";
 
-    return get(scrollMap, key) || scrollMap.default;
+    return get(scrollMap, key) || (scrollMap.default as ScrollPosition);
   },
 });
 
 export default RouterScroll;
+
+declare module "@ember/service" {
+  interface Registry {
+    "router-scroll": RouterScroll;
+  }
+}
