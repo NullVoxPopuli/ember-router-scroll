@@ -6,6 +6,7 @@
     "declaration": true,
     "declarationMap": true,
     "emitDeclarationOnly": true,
-    "isolatedDeclarations": true
+    "isolatedDeclarations": true,
+    "types": ["ember-source/types", "@glint/ember-tsc/types"]
   }
 }
