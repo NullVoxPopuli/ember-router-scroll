@@ -55,7 +55,7 @@
     "test:ci": "testem ci --file config/test/testem.cjs --port 0"
   },
   "dependencies": {
-    "@ember/test-waiters": "^4.1.2",
+    "@ember/test-waiters": "^3.0.0 || ^4.0.0",
     "@embroider/addon-shim": "^1.10.3",
     "decorator-transforms": "^2.4.0"
   },
