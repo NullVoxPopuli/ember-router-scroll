@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 import EmberRouter from "@ember/routing/router";
 import Route from "@ember/routing/route";
 import Controller from "@ember/controller";
@@ -8,12 +9,12 @@ import { setupEmberOnerrorValidation, start as qunitStart } from "ember-qunit";
 import { setTesting } from "@embroider/macros";
 import EmberApp from "@ember/application";
 
-import RouterScrollService from "#src/services/router-scroll.js";
+import RouterScrollService from "#src/services/router-scroll.ts";
 
-import ApplicationTemplate from "./test-app/application.gjs";
-import NextPageTemplate from "./test-app/next-page.gjs";
-import TargetNextPageTemplate from "./test-app/target-next-page.gjs";
-import TargetTemplate from "./test-app/target.gjs";
+import ApplicationTemplate from "./test-app/application.gts";
+import NextPageTemplate from "./test-app/next-page.gts";
+import TargetNextPageTemplate from "./test-app/target-next-page.gts";
+import TargetTemplate from "./test-app/target.gts";
 
 import "./styles.css";
 

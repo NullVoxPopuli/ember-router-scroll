@@ -2,7 +2,6 @@
   "extends": "@ember/library-tsconfig",
   "include": ["src", "tests"],
   "compilerOptions": {
-    "allowJs": true,
     "declaration": false,
     "declarationMap": false,
     "emitDeclarationOnly": false,

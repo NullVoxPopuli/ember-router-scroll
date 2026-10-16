@@ -1,9 +1,10 @@
 import { LinkTo } from "@ember/routing";
 import { hash } from "@ember/helper";
+import type { TOC } from "@ember/component/template-only";
 
-const not = (x) => !x;
+const not = (x: unknown) => !x;
 
-<template>
+const Application: TOC<{ Args: { controller: { small: boolean } } }> = <template>
   <div id="ocean">
     <div id="intro">
       Click on the submarine to launch!
@@ -59,4 +60,6 @@ const not = (x) => !x;
     <img src="/images/tentacle-monster.png" alt="Monster" id="monster" />
   </div>
   {{outlet}}
-</template>
+</template>;
+
+export default Application;

@@ -2,13 +2,23 @@ import EmberObject from "@ember/object";
 import { module, test } from "qunit";
 import { setupTest } from "ember-qunit";
 import { settled } from "@ember/test-helpers";
+import type RouterService from "@ember/routing/router-service";
 
-let scrollTo, subject;
+let scrollTo: typeof window.scrollTo;
+let subject: RouterService;
+
+/**
+ * `window.scrollTo` has overloads, and the service only calls the `(x, y)` one.
+ */
+function stubScrollTo(fn: (x: number, y: number) => void) {
+  window.scrollTo = fn as typeof window.scrollTo;
+}
 
 module("router-scroll", function (hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function () {
+    // eslint-disable-next-line @typescript-eslint/unbound-method -- restored as-is in afterEach
     scrollTo = window.scrollTo;
   });
 
@@ -16,7 +26,7 @@ module("router-scroll", function (hooks) {
     window.scrollTo = scrollTo;
   });
 
-  function getTransitionsMock(URL, isPreserveScroll) {
+  function getTransitionsMock(URL?: string, isPreserveScroll?: boolean) {
     Object.defineProperty(subject, "currentURL", {
       value: URL || "Hello/World",
     });
@@ -159,7 +169,7 @@ module("router-scroll", function (hooks) {
     );
     const routerScrollService = this.owner.lookup("service:router-scroll");
     Object.defineProperty(routerScrollService, "position", {
-      get position() {
+      get() {
         return { x: 0, y: 0 };
       },
     });
@@ -187,20 +197,20 @@ module("router-scroll", function (hooks) {
     assert.verifySteps([], "Scroll To should not be called");
   });
 
-  test("Update Scroll Position: URL is an anchor", async function (assert) {
+  test("Update Scroll Position: URL is an anchor", function (assert) {
     const done = assert.async();
 
     const elem = document.createElement("div");
     elem.id = "World";
     document.body.insertBefore(elem, null);
-    window.scrollTo = (x, y) => {
+    stubScrollTo((x, y) => {
       assert.step(`scrollTo ${x} ${y}`);
       assert.verifySteps(
         [`scrollTo ${elem.offsetLeft} ${elem.offsetTop}`],
         "Scroll to called with the offsets of the anchor element",
       );
       done();
-    };
+    });
 
     this.owner.register(
       "service:fastboot",
@@ -224,11 +234,11 @@ module("router-scroll", function (hooks) {
   test("Update Scroll Position: URL has nothing after an anchor", function (assert) {
     const done = assert.async();
 
-    window.scrollTo = (x, y) => {
+    stubScrollTo((x, y) => {
       assert.step(`scrollTo ${x} ${y}`);
       assert.verifySteps(["scrollTo 1 2"], "Scroll to called with the service position");
       done();
-    };
+    });
 
     this.owner.register(
       "service:fastboot",
@@ -252,11 +262,11 @@ module("router-scroll", function (hooks) {
     const elem = document.createElement("div");
     elem.id = "World";
     document.body.insertBefore(elem, null);
-    window.scrollTo = (x, y) => {
+    stubScrollTo((x, y) => {
       assert.step(`scrollTo ${x} ${y}`);
       assert.verifySteps(["scrollTo 1 2"], "Scroll to called with the service position");
       done();
-    };
+    });
 
     this.owner.register(
       "service:fastboot",
@@ -277,11 +287,11 @@ module("router-scroll", function (hooks) {
   test("Update Scroll Position: Scroll Position is set by service", function (assert) {
     const done = assert.async();
 
-    window.scrollTo = (x, y) => {
+    stubScrollTo((x, y) => {
       assert.step(`scrollTo ${x} ${y}`);
       assert.verifySteps(["scrollTo 1 20"], "Scroll to called with the service position");
       done();
-    };
+    });
 
     this.owner.register(
       "service:fastboot",
