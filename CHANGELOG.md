@@ -2,6 +2,18 @@
 
 ## Release (2026-10-16)
 
+* @nullvoxpopuli/ember-router-scroll 0.1.1 (patch)
+
+#### :bug: Bug Fix
+* `@nullvoxpopuli/ember-router-scroll`
+  * [#17](https://github.com/NullVoxPopuli/ember-router-scroll/pull/17) Remove type: module from package.json ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+  * [#14](https://github.com/NullVoxPopuli/ember-router-scroll/pull/14) Import getOwner from @ember/owner ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+
+#### Committers: 1
+- @NullVoxPopuli's reduced-access machine account for AI usage ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+
+## Release (2026-10-16)
+
 * @nullvoxpopuli/ember-router-scroll 0.1.0 (minor)
 
 #### :rocket: Enhancement
