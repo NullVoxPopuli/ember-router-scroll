@@ -11,6 +11,10 @@
   },
   "license": "MIT",
   "author": "",
+  "type": "module",
+  "imports": {
+    "#src/*": "./src/*"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -36,20 +40,20 @@
   ],
   "scripts": {
     "build": "tsdown",
+    "build:test": "EMBER_ENV=test NODE_ENV=development vite build --mode development",
     "format": "prettier --write .",
     "lint": "concurrently \"pnpm:lint:*(!fix)\" --names \"lint:\" --prefixColors auto",
+    "lint:eslint": "eslint . --cache",
+    "lint:eslint:fix": "eslint . --fix",
     "lint:fix": "concurrently \"pnpm:lint:*:fix\" --names \"fix:\" --prefixColors auto && pnpm format",
     "lint:hbs": "ember-template-lint . --no-error-on-unmatched-pattern",
     "lint:hbs:fix": "ember-template-lint . --fix --no-error-on-unmatched-pattern",
+    "lint:prettier": "prettier --check .",
     "lint:types": "tsc --noEmit --runExternalCode",
     "prepack": "tsdown",
     "start": "tsdown --watch",
-    "lint:eslint": "eslint . --cache",
-    "lint:eslint:fix": "eslint . --fix",
-    "lint:prettier": "prettier --check .",
-    "build:test": "EMBER_ENV=test NODE_ENV=development vite build --mode development",
-    "test:ci": "testem ci --file config/test/testem.cjs --port 0",
-    "test": "pnpm build:test && pnpm test:ci"
+    "test": "pnpm build:test && pnpm test:ci",
+    "test:ci": "testem ci --file config/test/testem.cjs --port 0"
   },
   "dependencies": {
     "@ember/test-waiters": "^4.1.2",
@@ -84,7 +88,7 @@
     "qunit": "^2.26.0",
     "qunit-dom": "3.5.0",
     "qunit-theme-ember": "^1.0.0",
-    "release-plan": "^0.16.0",
+    "release-plan": "^0.18.0",
     "testem": "3.17.0",
     "tsdown": "^0.22.14",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
@@ -105,9 +109,5 @@
       "./instance-initializers/ember-router-scroll.js": "./dist/_app_/instance-initializers/ember-router-scroll.js",
       "./services/router-scroll.js": "./dist/_app_/services/router-scroll.js"
     }
-  },
-  "type": "module",
-  "imports": {
-    "#src/*": "./src/*"
   }
 }
