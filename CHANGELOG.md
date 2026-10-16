@@ -1,5 +1,24 @@
 # Changelog
 
+## Release (2026-10-16)
+
+* @nullvoxpopuli/ember-router-scroll 0.1.0 (minor)
+
+#### :rocket: Enhancement
+* `@nullvoxpopuli/ember-router-scroll`
+  * [#13](https://github.com/NullVoxPopuli/ember-router-scroll/pull/13) Let nested controllers override preserveScrollPosition ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+  * [#11](https://github.com/NullVoxPopuli/ember-router-scroll/pull/11) Convert the library and tests to TypeScript ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+
+#### :house: Internal
+* `@nullvoxpopuli/ember-router-scroll`
+  * [#12](https://github.com/NullVoxPopuli/ember-router-scroll/pull/12) update release-plan ([@NullVoxPopuli](https://github.com/NullVoxPopuli))
+  * [#10](https://github.com/NullVoxPopuli/ember-router-scroll/pull/10) Move to the ember.nvp library setup ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+  * [#7](https://github.com/NullVoxPopuli/ember-router-scroll/pull/7) Fix the Ember 7 try scenarios ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+
+#### Committers: 2
+- @NullVoxPopuli's reduced-access machine account for AI usage ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+- [@NullVoxPopuli](https://github.com/NullVoxPopuli)
+
 ## Release (2025-04-28)
 
 * @nullvoxpopuli/ember-router-scroll 0.0.2 (patch)
