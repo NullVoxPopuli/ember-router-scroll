@@ -2,7 +2,7 @@ import Service, { service } from "@ember/service";
 import { set, get } from "@ember/object";
 import { typeOf } from "@ember/utils";
 import { assert } from "@ember/debug";
-import { getOwner } from "@ember/application";
+import { getOwner } from "@ember/owner";
 import { scheduleOnce } from "@ember/runloop";
 import { addListener, removeListener, sendEvent } from "@ember/object/events";
 import type Owner from "@ember/owner";
