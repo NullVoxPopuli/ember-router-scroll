@@ -148,18 +148,16 @@ module("router-scroll", function (hooks) {
     await Promise.resolve();
 
     assert.false(hasPendingWaiters(), "no test waiter is pending");
+
+    // If one is pending, let it finish now, so it can't fail the next test.
+    await settled();
   });
 
   test("it sets up the scheduler with scrollWhenIdle", function (assert) {
-    this.owner.register(
-      "config:environment",
-      { routerScroll: { scrollWhenIdle: true } },
-      { instantiate: false },
-    );
-
     const router = this.owner.lookup("service:router") as RouterService & Record<string, unknown>;
+    const routerScrollService = this.owner.lookup("service:router-scroll");
 
-    this.owner.lookup("service:router-scroll");
+    routerScrollService.scrollWhenIdle = true;
 
     assert.ok(router["__APP_SCHEDULER_HAS_SETUP__"], "the router is hooked up to the scheduler");
   });

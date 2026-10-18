@@ -113,8 +113,23 @@ class RouterScroll extends Service {
   isFirstLoad = true;
   preserveScrollPosition = false;
   // ember-app-scheduler properties
-  scrollWhenIdle = false;
+  #scrollWhenIdle = false;
   scrollWhenAfterRender = false;
+
+  get scrollWhenIdle(): boolean {
+    return this.#scrollWhenIdle;
+  }
+
+  set scrollWhenIdle(value: boolean) {
+    this.#scrollWhenIdle = value;
+
+    // Only scrollWhenIdle needs the scheduler. After every transition, it
+    // makes tests wait for animation frames, which background tabs don't run.
+    if (value) {
+      // https://github.com/ember-app-scheduler/ember-app-scheduler/pull/773
+      setupRouter(this.router);
+    }
+  }
 
   declare scrollMap: ScrollMap;
 
@@ -133,13 +148,6 @@ class RouterScroll extends Service {
     super.init(properties);
 
     this._loadConfig();
-
-    // Only scrollWhenIdle needs the scheduler. After every transition, it
-    // makes tests wait for animation frames, which background tabs don't run.
-    if (this.scrollWhenIdle) {
-      // https://github.com/ember-app-scheduler/ember-app-scheduler/pull/773
-      setupRouter(this.router);
-    }
 
     set(this, "scrollMap", {
       default: {
