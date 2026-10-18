@@ -134,11 +134,10 @@ class RouterScroll extends Service {
 
     this._loadConfig();
 
-    // Only `scrollWhenIdle` waits for the scheduler, whose test waiter holds
-    // settled() until two animation frames after every transition. Browsers
-    // don't run those in background tabs, so tests there would stall.
-    // https://github.com/ember-app-scheduler/ember-app-scheduler/pull/773
+    // Only scrollWhenIdle needs the scheduler. After every transition, it
+    // makes tests wait for animation frames, which background tabs don't run.
     if (this.scrollWhenIdle) {
+      // https://github.com/ember-app-scheduler/ember-app-scheduler/pull/773
       setupRouter(this.router);
     }
 

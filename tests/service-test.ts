@@ -144,7 +144,7 @@ module("router-scroll", function (hooks) {
     subject.trigger("routeWillChange");
     subject.trigger("routeDidChange");
 
-    // The scheduler would begin its waiter once routeDidChange resolves.
+    // The scheduler starts its waiter a microtask after routeDidChange.
     await Promise.resolve();
 
     assert.false(hasPendingWaiters(), "no test waiter is pending");
