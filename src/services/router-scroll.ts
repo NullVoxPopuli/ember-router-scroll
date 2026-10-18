@@ -5,7 +5,6 @@ import { assert } from "@ember/debug";
 import { getOwner } from "@ember/owner";
 import { scheduleOnce } from "@ember/runloop";
 import { addListener, removeListener, sendEvent } from "@ember/object/events";
-import type Owner from "@ember/owner";
 import type EngineInstance from "@ember/engine/instance";
 import type RouterService from "@ember/routing/router-service";
 import { setupRouter, whenRouteIdle } from "../scheduler.ts";
@@ -129,18 +128,20 @@ class RouterScroll extends Service {
    */
   declare readonly position: ScrollPosition;
 
-  constructor(owner: Owner) {
-    super(owner);
-
-    // https://github.com/ember-app-scheduler/ember-app-scheduler/pull/773
-    setupRouter(this.router);
-  }
-
   // eslint-disable-next-line ember/classic-decorator-hooks
   init(properties: object | undefined): void {
     super.init(properties);
 
     this._loadConfig();
+
+    // Only `scrollWhenIdle` waits for the scheduler, whose test waiter holds
+    // settled() until two animation frames after every transition. Browsers
+    // don't run those in background tabs, so tests there would stall.
+    // https://github.com/ember-app-scheduler/ember-app-scheduler/pull/773
+    if (this.scrollWhenIdle) {
+      setupRouter(this.router);
+    }
+
     set(this, "scrollMap", {
       default: {
         x: 0,

@@ -2,6 +2,7 @@ import EmberObject from "@ember/object";
 import { module, test } from "qunit";
 import { setupTest } from "ember-qunit";
 import { settled } from "@ember/test-helpers";
+import { hasPendingWaiters } from "@ember/test-waiters";
 import type RouterService from "@ember/routing/router-service";
 
 let scrollTo: typeof window.scrollTo;
@@ -133,6 +134,34 @@ module("router-scroll", function (hooks) {
 
     subject = this.owner.lookup("service:router");
     subject.trigger("routeDidChange");
+  });
+
+  test("a transition doesn't hold a test waiter without scrollWhenIdle", async function (assert) {
+    const routerScrollService = this.owner.lookup("service:router-scroll");
+    routerScrollService.updateScrollPosition = () => {};
+
+    subject = this.owner.lookup("service:router");
+    subject.trigger("routeWillChange");
+    subject.trigger("routeDidChange");
+
+    // The scheduler would begin its waiter once routeDidChange resolves.
+    await Promise.resolve();
+
+    assert.false(hasPendingWaiters(), "no test waiter is pending");
+  });
+
+  test("it sets up the scheduler with scrollWhenIdle", function (assert) {
+    this.owner.register(
+      "config:environment",
+      { routerScroll: { scrollWhenIdle: true } },
+      { instantiate: false },
+    );
+
+    const router = this.owner.lookup("service:router") as RouterService & Record<string, unknown>;
+
+    this.owner.lookup("service:router-scroll");
+
+    assert.ok(router["__APP_SCHEDULER_HAS_SETUP__"], "the router is hooked up to the scheduler");
   });
 
   test("when the application is not FastBooted with scrollWhenAfterRender", function (assert) {

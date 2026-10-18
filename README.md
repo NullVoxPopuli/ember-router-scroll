@@ -141,7 +141,7 @@ You may want the default "out of the box" behaviour. We schedule scroll immediat
 
 However, you have other options. If you need an extra tick after `render`, set `scrollWhenAfterRender: true`. You also may need to delay scroll functionality until the route is idle (approximately after the first paint completes) using `scrollWhenIdle: true` in your config. `scrollWhenIdle` && `scrollWhenAfterRender` defaults to `false`.
 
-This config property uses [`ember-app-scheduler`](https://github.com/ember-app-scheduler/ember-app-scheduler), so be sure to follow the instructions in the README. We include the `setupRouter` and `reset`. This all happens after `routeDidChange`.
+This config property uses [`ember-app-scheduler`](https://github.com/ember-app-scheduler/ember-app-scheduler), so be sure to follow the instructions in the README. We include the `setupRouter` and `reset`. This all happens after `routeDidChange`. The service reads `scrollWhenIdle` from your config when it starts, and only then hooks the router up to the scheduler, so set it in the config rather than on the service.
 
 ```javascript
 ENV["routerScroll"] = {
