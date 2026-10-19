@@ -10,3 +10,6 @@ declarations/
 node_modules/
 .eslintcache
 .prettiercache
+
+# local asdf version pinning
+.tool-versions
