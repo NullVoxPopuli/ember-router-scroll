@@ -5,7 +5,6 @@ import { assert } from "@ember/debug";
 import { getOwner } from "@ember/owner";
 import { scheduleOnce } from "@ember/runloop";
 import { addListener, removeListener, sendEvent } from "@ember/object/events";
-import type Owner from "@ember/owner";
 import type EngineInstance from "@ember/engine/instance";
 import type RouterService from "@ember/routing/router-service";
 import { setupRouter, whenRouteIdle } from "../scheduler.ts";
@@ -114,8 +113,23 @@ class RouterScroll extends Service {
   isFirstLoad = true;
   preserveScrollPosition = false;
   // ember-app-scheduler properties
-  scrollWhenIdle = false;
+  #scrollWhenIdle = false;
   scrollWhenAfterRender = false;
+
+  get scrollWhenIdle(): boolean {
+    return this.#scrollWhenIdle;
+  }
+
+  set scrollWhenIdle(value: boolean) {
+    this.#scrollWhenIdle = value;
+
+    // Only scrollWhenIdle needs the scheduler. After every transition, it
+    // makes tests wait for animation frames, which background tabs don't run.
+    if (value) {
+      // https://github.com/ember-app-scheduler/ember-app-scheduler/pull/773
+      setupRouter(this.router);
+    }
+  }
 
   declare scrollMap: ScrollMap;
 
@@ -129,18 +143,12 @@ class RouterScroll extends Service {
    */
   declare readonly position: ScrollPosition;
 
-  constructor(owner: Owner) {
-    super(owner);
-
-    // https://github.com/ember-app-scheduler/ember-app-scheduler/pull/773
-    setupRouter(this.router);
-  }
-
   // eslint-disable-next-line ember/classic-decorator-hooks
   init(properties: object | undefined): void {
     super.init(properties);
 
     this._loadConfig();
+
     set(this, "scrollMap", {
       default: {
         x: 0,
