@@ -1,5 +1,16 @@
 # Changelog
 
+## Release (2026-10-19)
+
+* @nullvoxpopuli/ember-router-scroll 0.1.3 (patch)
+
+#### :bug: Bug Fix
+* `@nullvoxpopuli/ember-router-scroll`
+  * [#20](https://github.com/NullVoxPopuli/ember-router-scroll/pull/20) Set up the scheduler only with scrollWhenIdle ([@aklkv](https://github.com/aklkv))
+
+#### Committers: 1
+- Alexey Kulakov ([@aklkv](https://github.com/aklkv))
+
 ## Release (2026-10-16)
 
 * @nullvoxpopuli/ember-router-scroll 0.1.2 (patch)
