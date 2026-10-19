@@ -2,6 +2,17 @@
 
 ## Release (2026-10-19)
 
+* @nullvoxpopuli/ember-router-scroll 0.1.4 (patch)
+
+#### :house: Internal
+* `@nullvoxpopuli/ember-router-scroll`
+  * [#22](https://github.com/NullVoxPopuli/ember-router-scroll/pull/22) Refresh lockfile to pick up patched transitive dependencies ([@Gaurav0](https://github.com/Gaurav0))
+
+#### Committers: 1
+- Gaurav Munjal ([@Gaurav0](https://github.com/Gaurav0))
+
+## Release (2026-10-19)
+
 * @nullvoxpopuli/ember-router-scroll 0.1.3 (patch)
 
 #### :bug: Bug Fix
