@@ -1,0 +1,111 @@
+{
+  "name": "@nullvoxpopuli/ember-router-scroll",
+  "version": "0.1.3",
+  "description": "The default blueprint for Embroider v2 addons.",
+  "keywords": [
+    "ember-addon"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:NullVoxPopuli/ember-router-scroll.git"
+  },
+  "license": "MIT",
+  "author": "",
+  "imports": {
+    "#src/*": "./src/*"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "default": "./dist/*.js"
+    },
+    "./addon-main.js": "./addon-main.cjs"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "dist/*"
+      ]
+    }
+  },
+  "files": [
+    "addon-main.cjs",
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "build:test": "EMBER_ENV=test NODE_ENV=development vite build --mode development",
+    "format": "prettier --write .",
+    "lint": "concurrently \"pnpm:lint:*(!fix)\" --names \"lint:\" --prefixColors auto",
+    "lint:eslint": "eslint . --cache",
+    "lint:eslint:fix": "eslint . --fix",
+    "lint:fix": "concurrently \"pnpm:lint:*:fix\" --names \"fix:\" --prefixColors auto && pnpm format",
+    "lint:hbs": "ember-template-lint . --no-error-on-unmatched-pattern",
+    "lint:hbs:fix": "ember-template-lint . --fix --no-error-on-unmatched-pattern",
+    "lint:prettier": "prettier --check .",
+    "lint:types": "tsc --noEmit --runExternalCode",
+    "start": "tsdown --watch",
+    "test": "pnpm build:test && pnpm test:ci",
+    "test:ci": "testem ci --file config/test/testem.cjs --port 0"
+  },
+  "dependencies": {
+    "@ember/test-waiters": "^3.0.0 || ^4.0.0",
+    "@embroider/addon-shim": "^1.10.3",
+    "decorator-transforms": "^2.4.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.29.7",
+    "@babel/plugin-transform-typescript": "^7.29.9",
+    "@babel/runtime": "^7.29.10",
+    "@ember/library-tsconfig": "^2.0.0",
+    "@ember/test-helpers": "^5.7.0",
+    "@embroider/macros": "^1.21.3",
+    "@glimmer/component": "^2.1.1",
+    "@glint/ember-tsc": "^1.11.6",
+    "@glint/template": "^1.9.0",
+    "@nullvoxpopuli/ember-rolldown": "2.11.0",
+    "@nullvoxpopuli/ember-vite": "1.3.0",
+    "@types/qunit": "^2.19.14",
+    "@typescript/native": "npm:typescript@^7.1.0-dev.20261016.1",
+    "babel-plugin-ember-template-compilation": "^4.0.1",
+    "concurrently": "^9.2.5",
+    "ember-content-mapper": "^0.3.1",
+    "ember-eslint": "^1.0.0",
+    "ember-qunit": "^9.2.0",
+    "ember-resolver": "^13.2.0",
+    "ember-source": "~7.2.1",
+    "ember-template-lint": "^6.1.0",
+    "eslint": "^10.13.0",
+    "prettier": "^3.9.10",
+    "prettier-plugin-ember-template-tag": "^2.1.8",
+    "qunit": "^2.26.0",
+    "qunit-dom": "3.5.0",
+    "qunit-theme-ember": "^1.0.0",
+    "release-plan": "^0.18.0",
+    "testem": "3.17.0",
+    "tsdown": "^0.22.14",
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
+    "vite": "^8.3.4"
+  },
+  "peerDependencies": {
+    "ember-source": ">= 4.12.0"
+  },
+  "packageManager": "pnpm@10.8.1",
+  "ember": {
+    "edition": "octane"
+  },
+  "ember-addon": {
+    "version": 2,
+    "type": "addon",
+    "main": "addon-main.cjs",
+    "app-js": {
+      "./instance-initializers/ember-router-scroll.js": "./dist/_app_/instance-initializers/ember-router-scroll.js",
+      "./services/router-scroll.js": "./dist/_app_/services/router-scroll.js"
+    }
+  }
+}
