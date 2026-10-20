@@ -81,6 +81,9 @@ importers:
       ember-source:
         specifier: ~7.2.1
         version: 7.2.1(@glimmer/component@2.1.1)
+      ember-strict-application-resolver:
+        specifier: ^0.1.1
+        version: 0.1.1(@babel/core@7.29.7)
       ember-template-lint:
         specifier: ^6.1.0
         version: 6.1.0
@@ -2672,6 +2675,9 @@ packages:
     engines: {node: '>= 20.19'}
     peerDependencies:
       '@glimmer/component': '>= 1.1.2'
+
+  ember-strict-application-resolver@0.1.1:
+    resolution: {integrity: sha512-/49JZ2Yk2ggicAGIoFNWcz05llhe2i+/2dpH5Pv1KlwZOBKkqMMJpTKEB4IMg+FjKBiE0r2yxuZzo9Oly9vc1A==}
 
   ember-template-imports@3.4.2:
     resolution: {integrity: sha512-OS8TUVG2kQYYwP3netunLVfeijPoOKIs1SvPQRTNOQX4Pu8xGGBEZmrv0U1YTnQn12Eg+p6w/0UdGbUnITjyzw==}
@@ -8261,6 +8267,14 @@ snapshots:
       silent-error: 1.1.1
       simple-html-tokenizer: 0.5.11
     transitivePeerDependencies:
+      - supports-color
+
+  ember-strict-application-resolver@0.1.1(@babel/core@7.29.7):
+    dependencies:
+      '@embroider/addon-shim': 1.10.3
+      decorator-transforms: 2.4.0(@babel/core@7.29.7)
+    transitivePeerDependencies:
+      - '@babel/core'
       - supports-color
 
   ember-template-imports@3.4.2:
