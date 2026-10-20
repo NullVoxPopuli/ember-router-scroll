@@ -5,7 +5,8 @@ import { resetOnerror, setApplication } from "@ember/test-helpers";
 import * as QUnit from "qunit";
 import { setup } from "qunit-dom";
 import { setupEmberOnerrorValidation, start as qunitStart } from "ember-qunit";
-import { setTesting } from "@embroider/macros";
+import { dependencySatisfies, macroCondition, setTesting } from "@embroider/macros";
+import RouteTemplate from "ember-route-template";
 import EmberApp from "ember-strict-application-resolver";
 
 import RouterScrollService from "#src/services/router-scroll.ts";
@@ -16,6 +17,13 @@ import TargetNextPageTemplate from "./test-app/target-next-page.gts";
 import TargetTemplate from "./test-app/target.gts";
 
 import "./styles.css";
+
+// Ember 6.3+ accepts a component as a route template. Older versions need it
+// wrapped in a template factory. (Ember 7.5 removed the legacy factory
+// fallback that the wrapper produces, so only use it where required.)
+const routeTemplate = macroCondition(dependencySatisfies("ember-source", ">=6.3.0"))
+  ? <T>(component: T) => component
+  : RouteTemplate;
 
 class Router extends EmberRouter {
   location = "none";
@@ -40,10 +48,10 @@ class TestApp extends EmberApp {
     "./routes/target-next-page": class extends Route {},
     "./routes/target": class extends Route {},
     "./controllers/application": ApplicationController,
-    "./templates/application": ApplicationTemplate,
-    "./templates/target": TargetTemplate,
-    "./templates/target-next-page": TargetNextPageTemplate,
-    "./templates/next-page": NextPageTemplate,
+    "./templates/application": routeTemplate(ApplicationTemplate),
+    "./templates/target": routeTemplate(TargetTemplate),
+    "./templates/target-next-page": routeTemplate(TargetNextPageTemplate),
+    "./templates/next-page": routeTemplate(NextPageTemplate),
     "./services/router-scroll": RouterScrollService,
   };
 }
