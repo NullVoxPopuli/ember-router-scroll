@@ -75,9 +75,6 @@ importers:
       ember-qunit:
         specifier: ^9.2.0
         version: 9.2.0(@ember/test-helpers@5.7.0(@babel/core@7.29.7))(qunit@2.26.0)
-      ember-resolver:
-        specifier: ^13.2.0
-        version: 13.2.0
       ember-route-template:
         specifier: ^1.0.3
         version: 1.0.3
@@ -105,9 +102,6 @@ importers:
       qunit-dom:
         specifier: 3.5.0
         version: 3.5.0
-      qunit-theme-ember:
-        specifier: ^1.0.0
-        version: 1.0.0
       release-plan:
         specifier: ^0.18.0
         version: 0.18.0
@@ -2662,9 +2656,6 @@ packages:
     peerDependencies:
       '@ember/test-helpers': '>=3.0.3'
       qunit: ^2.13.0 || ^3.0.0
-
-  ember-resolver@13.2.0:
-    resolution: {integrity: sha512-A+BffoSKC0ngiczbgaz/IOY66ovZVRRHHIDDi+d7so5i0By8xuB4nXgZZ6Dv3u/3WwoUyixgUvb0xTUO+MtupA==}
 
   ember-rfc176-data@0.3.18:
     resolution: {integrity: sha512-JtuLoYGSjay1W3MQAxt3eINWXNYYQliK90tLwtb8aeCuQK8zKGCRbBodVIrkcTqshULMnRuTOS6t1P7oQk3g6Q==}
@@ -8238,8 +8229,6 @@ snapshots:
       qunit-theme-ember: 1.0.0
     transitivePeerDependencies:
       - supports-color
-
-  ember-resolver@13.2.0: {}
 
   ember-rfc176-data@0.3.18: {}
 
