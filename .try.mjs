@@ -31,7 +31,7 @@ export default defineConfig({
     babel({
       babelHelpers: "inline",
       extensions,
-      configFile: "./config/test/babel.config.mjs",
+      configFile: "./config/test/babel.compat.config.mjs",
     }),
   ],
   build: {
@@ -40,6 +40,47 @@ export default defineConfig({
     },
   },
 });
+`,
+  /*
+   * Older ember-source imports DEBUG from @glimmer/env, which only works when
+   * babel replaces it, so the compat build adds Embroider's compat support.
+   */
+  "config/test/babel.compat.config.mjs": `import {
+  babelCompatSupport,
+  templateCompatSupport,
+} from "@embroider/compat/babel";
+
+export default {
+  plugins: [
+    [
+      "@babel/plugin-transform-typescript",
+      {
+        allExtensions: true,
+        onlyRemoveTypeImports: true,
+        allowDeclareFields: true,
+      },
+    ],
+    [
+      "babel-plugin-ember-template-compilation",
+      {
+        transforms: [...templateCompatSupport()],
+      },
+    ],
+    [
+      "module:decorator-transforms",
+      {
+        runtime: {
+          import: import.meta.resolve("decorator-transforms/runtime-esm"),
+        },
+      },
+    ],
+    ...babelCompatSupport(),
+  ],
+
+  generatorOpts: {
+    compact: false,
+  },
+};
 `,
   "tests/index.html": `<!doctype html>
 <html>
