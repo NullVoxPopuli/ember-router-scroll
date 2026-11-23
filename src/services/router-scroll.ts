@@ -7,6 +7,7 @@ import { scheduleOnce } from "@ember/runloop";
 import { addListener, removeListener, sendEvent } from "@ember/object/events";
 import type EngineInstance from "@ember/engine/instance";
 import type RouterService from "@ember/routing/router-service";
+import { buildWaiter, type Token } from "@ember/test-waiters";
 import { setupRouter, whenRouteIdle } from "../scheduler.ts";
 
 export interface ScrollPosition {
@@ -49,6 +50,12 @@ let ATTEMPTS = 0;
 const MAX_ATTEMPTS = 100; // rAF runs every 16ms ideally, so 60x a second
 
 let callbackRequestId: number | undefined;
+let pendingScroll: { token: Token } | undefined;
+
+/**
+ * Tests that visit a route wait for the scroll, which happens in an animation frame after the render.
+ */
+const waiter = buildWaiter("ember-router-scroll:scroll");
 
 /**
  * By default, we start checking to see if the document height is >= the last known `y` position
@@ -76,7 +83,13 @@ function tryScrollRecursively(
     );
   }
 
+  const pending = { token: waiter.beginAsync() };
+
+  pendingScroll = pending;
   callbackRequestId = window.requestAnimationFrame(() => {
+    waiter.endAsync(pending.token);
+    if (pendingScroll === pending) pendingScroll = undefined;
+
     if (url && url.indexOf("#") > -1) {
       const hashElement = document.getElementById(url.split("#").pop() ?? "");
       if (hashElement) {
@@ -166,6 +179,11 @@ class RouterScroll extends Service {
 
     if (callbackRequestId) {
       window.cancelAnimationFrame(callbackRequestId);
+    }
+
+    if (pendingScroll) {
+      waiter.endAsync(pendingScroll.token);
+      pendingScroll = undefined;
     }
 
     super.willDestroy();
