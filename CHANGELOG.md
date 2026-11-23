@@ -1,5 +1,21 @@
 # Changelog
 
+## Release (2026-11-23)
+
+* @nullvoxpopuli/ember-router-scroll 0.1.4 (patch)
+
+#### :bug: Bug Fix
+* `@nullvoxpopuli/ember-router-scroll`
+  * [#25](https://github.com/NullVoxPopuli/ember-router-scroll/pull/25) Hold a test waiter until the scroll runs ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+
+#### :house: Internal
+* `@nullvoxpopuli/ember-router-scroll`
+  * [#22](https://github.com/NullVoxPopuli/ember-router-scroll/pull/22) Refresh lockfile to pick up patched transitive dependencies ([@Gaurav0](https://github.com/Gaurav0))
+
+#### Committers: 2
+- @NullVoxPopuli's reduced-access machine account for AI usage ([@NullVoxPopuli-ai-agent](https://github.com/NullVoxPopuli-ai-agent))
+- Gaurav Munjal ([@Gaurav0](https://github.com/Gaurav0))
+
 ## Release (2026-10-19)
 
 * @nullvoxpopuli/ember-router-scroll 0.1.3 (patch)
