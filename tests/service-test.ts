@@ -153,6 +153,22 @@ module("router-scroll", function (hooks) {
     await settled();
   });
 
+  test("a test waits for the scroll, which happens in an animation frame", async function (assert) {
+    stubScrollTo((x, y) => assert.step(`scrollTo ${x} ${y}`));
+
+    const routerScrollService = this.owner.lookup("service:router-scroll");
+    Object.defineProperty(routerScrollService, "position", {
+      value: { x: 1, y: 20 },
+    });
+    routerScrollService.scrollElement = "window";
+    subject = this.owner.lookup("service:router");
+
+    routerScrollService.updateScrollPosition(getTransitionsMock("Hello/World"));
+    await settled();
+
+    assert.verifySteps(["scrollTo 1 20"]);
+  });
+
   test("it sets up the scheduler with scrollWhenIdle", function (assert) {
     const router = this.owner.lookup("service:router") as RouterService & Record<string, unknown>;
     const routerScrollService = this.owner.lookup("service:router-scroll");
